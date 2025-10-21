@@ -6,6 +6,8 @@ const TodoHeader = ({
   totalTasks,
   percentCompeleted,
   totalInprogress,
+  searchTerm,
+  setSearchTerm,
 }) => {
   return (
     <>
@@ -79,6 +81,8 @@ const TodoHeader = ({
           </button>
         </div>
         <input
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search tasks..."
           className="w-full mt-6 p-3 border-3 border-black shadow-[3px_3px_0px_#000] focus:outline-none bg-white placeholder-gray-400"
           type="text"

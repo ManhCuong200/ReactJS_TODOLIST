@@ -48,6 +48,15 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+  };
+  const filteredTasks = listTasks.filter((task) =>
+    task.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  [searchTerm, listTasks];
+
   const totalCompeleted = listTasks.filter((task) => task.completed).length;
   const totalTask = listTasks.length;
   const percentCompeleted = ((totalCompeleted / totalTask) * 100).toFixed(0);
@@ -63,9 +72,11 @@ function App() {
             totalTasks={totalTask}
             totalCompeleted={totalCompeleted}
             onOpenTask={handleOpenModal}
+            searchTerm={searchTerm}
+            setSearchTerm={handleSearchChange}
           />
           <div className="grid gap-4">
-            {listTasks.map((task) => (
+            {filteredTasks.map((task) => (
               <ToDoItem
                 key={task.id}
                 task={task}
