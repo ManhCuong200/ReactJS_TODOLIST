@@ -44,6 +44,7 @@ function App() {
       updatedTasks = [...listTasks, newTask];
     }
     setlistTasks(updatedTasks);
+    setTitle("");
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     handleCloseModal();
   };
@@ -64,7 +65,6 @@ function App() {
   [searchTerm, listTasks];
 
   const [isEditing, setIsEditing] = useState(false);
-
   const handleEditTask = (id) => {
     const taskToEdit = listTasks.find((task) => task.id === id);
     if (taskToEdit) {
