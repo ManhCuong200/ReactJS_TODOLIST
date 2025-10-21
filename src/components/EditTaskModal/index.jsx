@@ -17,7 +17,7 @@ const EditTaskModal = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={true}
-        className="border-4 border-black bg-pink-200 
+        className="border-4 border-black bg-[#e9d4ff] 
                    shadow-[6px_6px_0px_#000] p-6 
                    sm:max-w-lg max-w-[calc(100%-2rem)] rounded-lg"
       >
