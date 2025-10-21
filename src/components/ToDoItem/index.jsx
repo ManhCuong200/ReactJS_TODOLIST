@@ -1,6 +1,12 @@
 import React from "react";
 
-const ToDoItem = ({ task, handleClick, handleDeleteTask }) => {
+const ToDoItem = ({
+  task,
+  handleClick,
+  handleDeleteTask,
+  handleEditTask,
+  isEditing,
+}) => {
   return (
     <div
       className={`space-y-4  ${
@@ -42,8 +48,10 @@ const ToDoItem = ({ task, handleClick, handleDeleteTask }) => {
           </p>
 
           <button
+            onClick={() => handleEditTask(task.id)}
+            enabled={isEditing}
             type="button"
-            className="inline-flex items-center justify-center gap-2 absolute right-20 top-1/2 -translate-y-1/2 px-3 py-1 ml-4 border-3 rounded-lg border-black bg-transparent shadow-[2px_2px_0px_#000] transition-all"
+            className="inline-flex items-center justify-center gap-2 absolute right-20 top-1/2 -translate-y-1/2 px-3 py-1 ml-4 border-3 rounded-lg border-black bg-transparent shadow-[2px_2px_0px_#000] transition-all cursor-pointer"
           >
             <svg
               width="20"

@@ -26,19 +26,27 @@ function App() {
   };
 
   const [title, setTitle] = useState("");
+  const [editingId, setEditingId] = useState(null);
   const handleAddTask = () => {
-    if (title.trim() === "") {
-      return;
+    if (title.trim() === "") return;
+
+    let updatedTasks;
+
+    if (isEditing) {
+      updatedTasks = listTasks.map((task) =>
+        task.id === editingId ? { ...task, title } : task
+      );
+    } else {
+      const newTask = {
+        id: Date.now(),
+        title: title,
+        completed: false,
+      };
+      updatedTasks = [...listTasks, newTask];
     }
-    const newTask = {
-      id: Date.now(),
-      title: title,
-      completed: false,
-    };
-    const updatedTasks = [...listTasks, newTask];
+
     setlistTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-    setTitle("");
     handleCloseModal();
   };
 
@@ -56,6 +64,17 @@ function App() {
     task.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
   [searchTerm, listTasks];
+
+  const [isEditing, setIsEditing] = useState(false);
+  const handleEditTask = (id) => {
+    const taskToEdit = listTasks.find((task) => task.id === id);
+    if (taskToEdit) {
+      setTitle(taskToEdit.title);
+      setIsEditing(true);
+      setEditingId(id);
+      handleOpenModal();
+    }
+  };
 
   const totalCompeleted = listTasks.filter((task) => task.completed).length;
   const totalTask = listTasks.length;
@@ -82,6 +101,8 @@ function App() {
                 task={task}
                 handleClick={handleClick}
                 handleDeleteTask={handleDeleteTask}
+                handleEditTask={handleEditTask}
+                isEditing={isEditing}
               />
             ))}
           </div>
