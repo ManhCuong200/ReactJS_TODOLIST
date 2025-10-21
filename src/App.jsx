@@ -5,24 +5,9 @@ import ToDoHeader from "./components/ToDoHeader";
 
 function App() {
   const [listTasks, setlistTasks] = useState(
-    JSON.parse(localStorage.getItem("tasks")) || [
-      {
-        id: 1,
-        title: "Learn React components",
-        completed: true,
-      },
-      {
-        id: 2,
-        title: "Master Javascript props",
-        completed: true,
-      },
-      {
-        id: 3,
-        title: "Master Nodejs props",
-        completed: true,
-      },
-    ]
+    JSON.parse(localStorage.getItem("tasks")) || []
   );
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -31,13 +16,38 @@ function App() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
   const handleClick = (id) => {
-    setlistTasks(
-      listTasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+    const updatedTasks = listTasks.map((task) =>
+      task.id === id ? { ...task, completed: !task.completed } : task
     );
+    setlistTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   };
+
+  const [title, setTitle] = useState("");
+  const handleAddTask = () => {
+    if (title.trim() === "") {
+      return;
+    }
+    const newTask = {
+      id: Date.now(),
+      title: title,
+      completed: false,
+    };
+    const updatedTasks = [...listTasks, newTask];
+    setlistTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    setTitle("");
+    handleCloseModal();
+  };
+
+  const handleDeleteTask = (id) => {
+    const updatedTasks = listTasks.filter((task) => task.id !== id);
+    setlistTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  };
+
   const totalCompeleted = listTasks.filter((task) => task.completed).length;
   const totalTask = listTasks.length;
   const percentCompeleted = ((totalCompeleted / totalTask) * 100).toFixed(0);
@@ -55,13 +65,24 @@ function App() {
             onOpenTask={handleOpenModal}
           />
           <div className="grid gap-4">
-            {listTasks.map((task, index) => (
-              <ToDoItem key={index} task={task} handleClick={handleClick} />
+            {listTasks.map((task) => (
+              <ToDoItem
+                key={task.id}
+                task={task}
+                handleClick={handleClick}
+                handleDeleteTask={handleDeleteTask}
+              />
             ))}
           </div>
         </div>
       </div>
-      <AddTaskModal open={isModalOpen} onOpenChange={handleCloseModal} />
+      <AddTaskModal
+        open={isModalOpen}
+        title={title}
+        setTitle={setTitle}
+        onOpenChange={handleCloseModal}
+        handleAddTask={handleAddTask}
+      />
     </>
   );
 }

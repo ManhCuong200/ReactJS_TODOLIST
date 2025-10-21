@@ -1,6 +1,6 @@
 import React from "react";
 
-const ToDoItem = ({ key, task, handleClick }) => {
+const ToDoItem = ({ task, handleClick, handleDeleteTask }) => {
   return (
     <div
       className={`space-y-4  ${
@@ -38,7 +38,7 @@ const ToDoItem = ({ key, task, handleClick }) => {
               task.completed ? "text-gray-700" : "text-orange-700"
             }`}
           >
-            {task.completed ? "Completed" : "In progress..."}
+            {task.completed ? "Task Completed!" : "In progress..."}
           </p>
 
           <button
@@ -56,7 +56,10 @@ const ToDoItem = ({ key, task, handleClick }) => {
             </svg>
           </button>
 
-          <button className="absolute right-4 top-1/2 -translate-y-1/2 ml-4 px-3 py-1 border-3 border-black shadow-[2px_2px_0px_#000] rounded-lg cursor-pointer transition-all">
+          <button
+            className="absolute right-4 top-1/2 -translate-y-1/2 ml-4 px-3 py-1 border-3 border-black shadow-[2px_2px_0px_#000] rounded-lg cursor-pointer transition-all"
+            onClick={() => handleDeleteTask(task.id)}
+          >
             <svg
               width="20"
               height="20"

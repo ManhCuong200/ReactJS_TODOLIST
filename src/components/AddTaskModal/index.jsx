@@ -6,7 +6,13 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 
-const AddTaskModal = ({ open, onOpenChange }) => {
+const AddTaskModal = ({
+  open,
+  onOpenChange,
+  handleAddTask,
+  title,
+  setTitle,
+}) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -24,11 +30,14 @@ const AddTaskModal = ({ open, onOpenChange }) => {
             className="flex h-9 w-full rounded-md border-3 border-black px-3 py-1 
                        text-base shadow-xs outline-none bg-transparent 
                        focus-visible:ring-2 focus-visible:ring-black"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
 
         <DialogFooter className="mt-4">
           <button
+            onClick={() => handleAddTask()}
             className="inline-flex items-center justify-center h-9 px-4 rounded-md font-bold
                        border-4 border-black bg-green-300 text-black
                        shadow-[4px_4px_0px_#000] hover:translate-x-1 hover:translate-y-1
