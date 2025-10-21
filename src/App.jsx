@@ -2,6 +2,7 @@ import { useState } from "react";
 import AddTaskModal from "./components/AddTaskModal";
 import ToDoItem from "./components/ToDoItem";
 import ToDoHeader from "./components/ToDoHeader";
+import EditTaskModal from "./components/EditTaskModal";
 
 function App() {
   const [listTasks, setlistTasks] = useState(
@@ -29,9 +30,7 @@ function App() {
   const [editingId, setEditingId] = useState(null);
   const handleAddTask = () => {
     if (title.trim() === "") return;
-
     let updatedTasks;
-
     if (isEditing) {
       updatedTasks = listTasks.map((task) =>
         task.id === editingId ? { ...task, title } : task
@@ -44,7 +43,6 @@ function App() {
       };
       updatedTasks = [...listTasks, newTask];
     }
-
     setlistTasks(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     handleCloseModal();
@@ -66,16 +64,25 @@ function App() {
   [searchTerm, listTasks];
 
   const [isEditing, setIsEditing] = useState(false);
+
   const handleEditTask = (id) => {
     const taskToEdit = listTasks.find((task) => task.id === id);
     if (taskToEdit) {
-      setTitle(taskToEdit.title);
-      setIsEditing(true);
       setEditingId(id);
-      handleOpenModal();
+      setCurrentTitle(taskToEdit.title);
+      setIsEditing(true);
     }
   };
 
+  const [currentTitle, setCurrentTitle] = useState("");
+  const handleUpdateTask = () => {
+    const updatedTasks = listTasks.map((task) =>
+      task.id === editingId ? { ...task, title: currentTitle } : task
+    );
+    setlistTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    setIsEditing(false);
+  };
   const totalCompeleted = listTasks.filter((task) => task.completed).length;
   const totalTask = listTasks.length;
   const percentCompeleted = ((totalCompeleted / totalTask) * 100).toFixed(0);
@@ -114,6 +121,13 @@ function App() {
         setTitle={setTitle}
         onOpenChange={handleCloseModal}
         handleAddTask={handleAddTask}
+      />
+      <EditTaskModal
+        open={isEditing}
+        onOpenChange={setIsEditing}
+        currentTitle={currentTitle}
+        setCurrentTitle={setCurrentTitle}
+        handleUpdateTask={handleUpdateTask}
       />
     </>
   );
