@@ -9,7 +9,7 @@ import {
 const AddTaskModal = ({
   open,
   onOpenChange,
-  handleAddTask,
+  handleSaveTask,
   title,
   setTitle,
 }) => {
@@ -25,6 +25,11 @@ const AddTaskModal = ({
 
         <div className="mt-4">
           <input
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleAddTask();
+              }
+            }}
             placeholder="Enter task title..."
             type="text"
             className="flex h-9 w-full rounded-md border-3 border-black px-3 py-1 
@@ -37,7 +42,7 @@ const AddTaskModal = ({
 
         <DialogFooter className="mt-4">
           <button
-            onClick={() => handleAddTask()}
+            onClick={() => handleSaveTask()}
             className="inline-flex items-center justify-center h-9 px-4 rounded-md font-bold
                        border-4 border-black bg-green-300 text-black
                        shadow-[4px_4px_0px_#000] hover:translate-x-1 hover:translate-y-1

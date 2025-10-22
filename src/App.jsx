@@ -2,7 +2,6 @@ import { useState } from "react";
 import AddTaskModal from "./components/AddTaskModal";
 import ToDoItem from "./components/ToDoItem";
 import ToDoHeader from "./components/ToDoHeader";
-import EditTaskModal from "./components/EditTaskModal";
 
 function App() {
   const [listTasks, setlistTasks] = useState(
@@ -28,13 +27,17 @@ function App() {
 
   const [title, setTitle] = useState("");
   const [editingId, setEditingId] = useState(null);
-  const handleAddTask = () => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleSaveTask = () => {
+    // debugger;
     if (title.trim() === "") return;
     let updatedTasks;
-    if (isEditing) {
+    if (editingId) {
       updatedTasks = listTasks.map((task) =>
         task.id === editingId ? { ...task, title } : task
       );
+      setEditingId(null);
     } else {
       const newTask = {
         id: Date.now(),
@@ -62,27 +65,41 @@ function App() {
   const filteredTasks = listTasks.filter((task) =>
     task.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  [searchTerm, listTasks];
 
-  const [isEditing, setIsEditing] = useState(false);
   const handleEditTask = (id) => {
-    const taskToEdit = listTasks.find((task) => task.id === id);
-    if (taskToEdit) {
-      setEditingId(id);
-      setCurrentTitle(taskToEdit.title);
-      setIsEditing(true);
-    }
+    // const taskToEdit = listTasks.find((task) => task.id === id);
+    // if (taskToEdit) {
+    //   setEditingId(id);
+    //   setCurrentTitle(taskToEdit.title);
+    //   setIsEditing(true);
+    // }
+    setEditingId(id);
+    setIsModalOpen(true);
+    setTitle(listTasks.find((task) => task.id === id).title);
   };
 
-  const [currentTitle, setCurrentTitle] = useState("");
-  const handleUpdateTask = () => {
-    const updatedTasks = listTasks.map((task) =>
-      task.id === editingId ? { ...task, title: currentTitle } : task
+  // const [currentTitle, setCurrentTitle] = useState("");
+  // const handleUpdateTask = () => {
+  //   if (currentTitle.trim() === "") return;
+  //   const updatedTasks = listTasks.map((task) =>
+  //     task.id === editingId ? { ...task, title: currentTitle } : task
+  //   );
+  //   setlistTasks(updatedTasks);
+  //   localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  //   setIsEditing(false);
+  // };
+
+  const [filter, setFilter] = useState("all");
+  const filteredTask = listTasks
+    .filter((task) => {
+      if (filter === "active") return !task.completed;
+      if (filter === "completed") return task.completed;
+      return true;
+    })
+    .filter((task) =>
+      task.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setlistTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-    setIsEditing(false);
-  };
+
   const totalCompeleted = listTasks.filter((task) => task.completed).length;
   const totalTask = listTasks.length;
   const percentCompeleted = ((totalCompeleted / totalTask) * 100).toFixed(0);
@@ -100,9 +117,12 @@ function App() {
             onOpenTask={handleOpenModal}
             searchTerm={searchTerm}
             setSearchTerm={handleSearchChange}
+            filter={filter}
+            setFilter={setFilter}
+            handleSearchChange={handleSearchChange}
           />
           <div className="grid gap-4">
-            {filteredTasks.map((task) => (
+            {filteredTask.map((task) => (
               <ToDoItem
                 key={task.id}
                 task={task}
@@ -120,14 +140,7 @@ function App() {
         title={title}
         setTitle={setTitle}
         onOpenChange={handleCloseModal}
-        handleAddTask={handleAddTask}
-      />
-      <EditTaskModal
-        open={isEditing}
-        onOpenChange={setIsEditing}
-        currentTitle={currentTitle}
-        setCurrentTitle={setCurrentTitle}
-        handleUpdateTask={handleUpdateTask}
+        handleSaveTask={handleSaveTask}
       />
     </>
   );
